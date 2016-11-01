@@ -1,0 +1,16 @@
+{
+	"admin_user_name": "user@gmail.com",
+	"admin_password": "12345",
+	"kurento_url": "ws://localhost:8888/kurento",
+	"json_path": "",
+	"httpsPort": "443",
+	"cert_path": "/etc/letsencrypt/live/sync-jam-webrtc-external.youseeu.com/fullchain.pem",
+	"key_path": "/etc/letsencrypt/live/sync-jam-webrtc-external.youseeu.com/privkey.pem",
+	"record_path":"file:///home/ubuntu/recordings/",
+	"min_rec_band": "200",
+	"max_rec_band": "350",
+	"min_snd_band": "200",
+	"max_snd_band": "350",
+	"record_format": ".webm",
+	"room_expire": ".084"
+}

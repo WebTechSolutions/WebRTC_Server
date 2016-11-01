@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link rel="stylesheet" href="css/kurento.css">
+    <script src="lib/adapterjs/publish/adapter.debug.js"></script>
+
+    <!-- Use our version for IE/Safari, Their version for other browsers -->
+    <script src="bower_components/kurento-utils/dist/kurento-utils.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script src="js/index.js"></script>
+    <script src="js/participants.js"></script>
+    <title>Kurento Groupcall</title>
+</head>
+<body>
+
+<h1>Kurento Groupcall</h1>
+
+<div class="container" id="container">
+    <video id="local_video" autoplay width="320px" height="240px" poster="img/webrtc.png"></video>
+    <input type="text" name="userName" value="" id="userName"
+           placeholder="Username" />
+    <button id="register" onClick="register()">Register</button> <br />
+    <input type="text" disabled="disabled" name="room" value="" id="roomName"
+           placeholder="Room">
+    <button id="joinRoom" disabled="disabled" onClick="joinRoom()">Join Room</button><br />
+    <input type="text" disabled="disabled" name="otherUserName" value="" id="otherUserName"
+           placeholder="Other registered username">
+    <button id="sendInvite" disabled="disabled" onClick="call()">Send invite</button><br />
+    <button id="leaveRoom" disabled="disabled" onClick="leaveRoom()">Leave room</button>
+    <div id="video_list">
+
+    </div>
+</div>
+</body>
+</html>
