@@ -143,6 +143,9 @@ io.on('connection', function (socket) {
             case 'leaveRoom':
                 leaveRoom(socket.id);
                 break;
+            case 'leaveScreenPublishOnly':
+                leaveScreenPublishOnly(socket.id+'_screen');
+                break;
             case 'leaveMyPublishOnly':
                 leaveMyPublishOnly(socket.id);
                 break;
@@ -150,7 +153,11 @@ io.on('connection', function (socket) {
                 call(socket.id, message.to, message.from);
                 break;
             case "startRecording":
-                startRecording(socket.id,message.room);
+                if(message.hasOwnProperty('screen')){
+                    startRecording(socket.id+'_screen',message.room);
+                }else{
+                    startRecording(socket.id,message.room);
+                }
                 break;
             case "stopRecording":
                 stopRecord(message.sessionid,false);
@@ -601,6 +608,49 @@ function leaveMyPublishOnly(sessionId, callback) {
     delete userSession.roomName;
 }
 /**
+ * Leave my connection only
+ * @param sessionId
+ * @param callback
+ */
+function leaveScreenPublishOnly(sessionId, callback) {
+    var userSession = userRegistry.getById(sessionId);
+    stopRecord(userSession.roomName,sessionId+'_screen');
+    if (!userSession) {
+        return;
+    }
+    var room = rooms[userSession.roomName];
+
+    if(!room){
+        return;
+    }
+    var usersInRoom = room.participants;
+    delete usersInRoom[userSession.id];
+    userSession.outgoingMedia.release();
+    var data = {
+        id: 'participantLeft',
+        sessionId: userSession.id,
+        screen:'1'
+    };
+    for (var i in usersInRoom) {
+        var user = usersInRoom[i];
+        var scrnses = user.id+'_screen';
+        if(scrnses != sessionId && user.role != 'screen')
+        {
+            user.incomingMedia[userSession.id].release();
+            delete user.incomingMedia[userSession.id];       
+            user.sendMessage(data);  
+        }
+        
+    }
+    // Release pipeline and delete room when room is empty
+    if (Object.keys(room.participants).length == 0) {
+        room.pipeline.release();
+        delete rooms[userSession.roomName];
+        //console.log('---------- Leave room on leavemypublishonly');
+    }
+    delete userSession.roomName;
+}
+/**
  * Leave (conference) call room
  * @param sessionId
  * @param callback
@@ -895,6 +945,7 @@ function stopRecord(roomname,socketId) {
  * @returns {string}
  */
  function setConfig(){
+    //config_data         = fs.readFileSync('/usr/share/nginx/html/MS2Part2/kurento-client/CONFIG.json', 'utf8');
     config_data         = fs.readFileSync('/home/ubuntu/nodejs/CONFIG.json', 'utf8');
     config_obj          = JSON.parse(config_data);
     websocket_url       = config_obj['websocket_url'];

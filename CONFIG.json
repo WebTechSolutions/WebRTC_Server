@@ -12,5 +12,6 @@
 	"min_snd_band": "200",
 	"max_snd_band": "350",
 	"record_format": ".webm",
-	"room_expire": ".084"
+	"room_port": "3478",
+	"room_expire": "1"
 }
